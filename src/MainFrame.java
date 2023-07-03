@@ -72,7 +72,7 @@ public class MainFrame extends JFrame {
         setSize(800, 600);
         setName(this.getTitle());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
+        setResizable(true);
         setLocationRelativeTo(null);
 
         mainPanel.setName("Grafo");
@@ -105,15 +105,15 @@ public class MainFrame extends JFrame {
      */
     private JMenuBar creaMenuBar() {
         JMenuBar menuBar = new JMenuBar();
-        menuBar.setLayout(new FlowLayout(FlowLayout.LEFT));
+        menuBar.setLayout(new BorderLayout());
         menuBar.setBackground(Color.DARK_GRAY);
         menuBar.setForeground(Color.WHITE);
         menuBar.setFont(new Font("Arial", Font.BOLD, 14));
 
-        JLabel modeLabel = new JLabel(modo);
-        modeLabel.setName("ModoLabel");
-        modeLabel.setBackground(Color.BLACK);
-        modeLabel.setForeground(Color.WHITE);
+        JLabel modoLabel = new JLabel(modo + "   ");
+        modoLabel.setName("ModoLabel");
+        modoLabel.setBackground(Color.BLACK);
+        modoLabel.setForeground(Color.WHITE);
 
         JMenu fileMenu = new JMenu("Archivo");
         JMenuItem limpiarItem = new JMenuItem("Limpiar");
@@ -133,7 +133,7 @@ public class MainFrame extends JFrame {
 
         fileMenu.setForeground(Color.WHITE);
 
-        menuBar.add(fileMenu);
+        menuBar.add(fileMenu, BorderLayout.WEST);
 
         JMenu modoMenu = new JMenu("Modo");
 
@@ -141,39 +141,41 @@ public class MainFrame extends JFrame {
         agregarItem.setName("Agregar Vértice/Arista");
         agregarItem.addActionListener(e -> {
             modo = "Agregar Vértice/Arista";
-            modeLabel.setText(modo);
+            modoLabel.setText(modo + "   ");
             infoLabel.setText("Click en espacio vacío para añadir vértice o en vértice para añadir arista");
-
         });
         modoMenu.add(agregarItem);
-
 
         JMenuItem eliminarItem = new JMenuItem("Eliminar Vértice/Arista");
         eliminarItem.setName("Eliminar Vértice/Arista");
         eliminarItem.addActionListener(e -> {
             modo = "Eliminar Vértice/Arista";
-            modeLabel.setText(modo);
+            modoLabel.setText(modo + "   ");
             infoLabel.setText("Click en el elemento que quieras eliminar");
         });
         modoMenu.add(eliminarItem);
 
         JMenuItem ningunoItem = new JMenuItem("Ninguno");
         ningunoItem.setName("Ninguno");
-        String espacio = "                          ";
         ningunoItem.addActionListener(e -> {
             modo = "Ninguno";
-            modeLabel.setText(espacio + modo);
+            modoLabel.setText(modo + "   ");
             infoLabel.setText("Ningún modo seleccionado");
         });
         modoMenu.add(ningunoItem);
         modoMenu.setForeground(Color.WHITE);
 
-        menuBar.add(modoMenu);
+        menuBar.add(modoMenu, BorderLayout.CENTER);
 
-        menuBar.add(Box.createHorizontalStrut(530));
-        menuBar.add(modeLabel);
+        JPanel panelDerecho = new JPanel(new BorderLayout());
+        panelDerecho.setOpaque(false);
+        panelDerecho.add(modoLabel, BorderLayout.EAST);
+
+        menuBar.add(panelDerecho, BorderLayout.EAST);
+
         return menuBar;
     }
+
 
     /**
      * Método para manejar el evento de click del mouse en el panel principal.
