@@ -18,7 +18,7 @@ La motivación principal de este proyecto fue adquirir experiencia en el uso de 
   ![Profundidad](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/03e35cfd-be86-4cf8-981a-41674c45b445)
 - Permite encontrar el camino más corto desde un vértice dado hasta todos los demás con el algoritmo de Dijkstra.
   ![dijk](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/3f20f41b-d4ef-4d38-bc85-49de11faad66)
-- Permite generar un árbol de expansión mínima que recubra todos los vértices con el menor peso posible  con el algoritmo de Kruskal.
+- Permite generar un árbol de expansión mínima que recubra todos los vértices con el menor peso usando el algoritmo de Kruskal.
   ![arbol](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/657d6973-3708-4602-9ee7-8384bfc1ffad)
 
 ## Licencia
