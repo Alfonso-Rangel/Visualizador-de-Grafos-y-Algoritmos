@@ -3,51 +3,32 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import javax.swing.SwingUtilities;
 
 /**
- * Representa un vértice en el grafo visualizado por la aplicación.
+ *  La clase representa un vértice en el grafo para ser visualizado por la aplicación.
+ *  Dibuja un componente circular.
  * @author Luis-Rangel
- * @version 1.0
+ * @version 1.1
  */
 public class Vertice extends JPanel implements MouseMotionListener {
     private final String ID;
+    // Se guardan sus aristas conectadas según su peso, esto es muy útil para construir árboles de expansión mínima.
+    private final PriorityQueue<Arista> aristasConectadas = new PriorityQueue<>(Comparator.comparingInt(Arista::getPeso));
     private static final int V_SIZE = 50;
     private static Vertice vOrigen;
-    private Color color = Color.WHITE;
+    private Color colorDeVertice = Color.decode("#ED94FF");
 
     /**
-     * Crea una nueva instancia de Vertice y lo pinta en las coordenadas dadas.
-     *
-     * @param x  La coordenada x del vértice.
-     * @param y  La coordenada y del vértice.
-     * @param ID El identificador del vértice.
+     * @return Las aristas conectadas al vértice, en orden ascendente.
      */
-    public Vertice(int x, int y, String ID) {
-        this.ID = ID;
-        setName("Vertice " + ID);
-        setBackground(Color.WHITE);
-        setPreferredSize(new Dimension(V_SIZE, V_SIZE));
-        setLayout(new GridBagLayout());
-        setBounds(x - V_SIZE / 2, y - V_SIZE / 2, V_SIZE, V_SIZE);
-        setOpaque(false);
-
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                leeClick(e);
-            }
-        });
-
-        JLabel vertexLabel = new JLabel(String.valueOf(ID));
-        vertexLabel.setName("VerticeLabel: " + ID);
-        add(vertexLabel);
-        addMouseMotionListener(this);
+    public PriorityQueue<Arista> getAristasConectadas() {
+        return aristasConectadas;
     }
 
     /**
-     * Devuelve el identificador del vértice.
-     *
      * @return El identificador del vértice.
      */
     public String getID() {
@@ -55,8 +36,6 @@ public class Vertice extends JPanel implements MouseMotionListener {
     }
 
     /**
-     * Devuelve el tamaño de los vértices.
-     *
      * @return El tamaño de los vértices.
      */
     public static int getvSize() {
@@ -64,8 +43,6 @@ public class Vertice extends JPanel implements MouseMotionListener {
     }
 
     /**
-     * Devuelve el vértice origen actualmente seleccionado.
-     *
      * @return El vértice origen seleccionado.
      */
     public static Vertice getvOrigen() {
@@ -73,19 +50,58 @@ public class Vertice extends JPanel implements MouseMotionListener {
     }
 
     /**
-     * Establece el color del vértice.
-     *
-     * @param color El color a establecer.
+     * @param colorDeVertice Actualiza el color del vértice.
      */
-    public void setColor(Color color) {
-        this.color = color;
+    public void setColorDeVertice(Color colorDeVertice) {
+        this.colorDeVertice = colorDeVertice;
         repaint();
+    }
+
+    /**
+     * Crea una nueva instancia de Vertice y lo pinta en las coordenadas dadas.
+     * @param x  La coordenada x del vértice.
+     * @param y  La coordenada y del vértice.
+     * @param ID El identificador del vértice.
+     */
+    public Vertice(int x, int y, String ID) {
+        this.ID = ID;
+        setName("Vertice " + ID);
+        setBackground(colorDeVertice);
+        setPreferredSize(new Dimension(V_SIZE, V_SIZE));
+        setLayout(new GridBagLayout());
+        setBounds(x - V_SIZE / 2, y - V_SIZE / 2, V_SIZE, V_SIZE);
+        setOpaque(false);
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                leeClick();
+            }
+        });
+        JLabel vertexLabel = new JLabel(String.valueOf(ID));
+        vertexLabel.setName("VerticeLabel: " + ID);
+        vertexLabel.setForeground(Color.BLACK);
+        add(vertexLabel);
+        addMouseMotionListener(this);
+    }
+
+    /**
+     * @param arista Añade la arista a la cola de aristas conectadas al vértice.
+     */
+    public void conectaArista(Arista arista) {
+        aristasConectadas.add(arista);
+    }
+
+    /**
+     * @param arista Elimina la arista de la cola de aristas conectadas al vértice.
+     */
+    public void desconectaArista(Arista arista) {
+        aristasConectadas.remove(arista);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(color);
+        g.setColor(colorDeVertice);
         g.fillOval(0, 0, V_SIZE, V_SIZE);
         g.setColor(Color.BLACK);
         g.drawOval(0, 0, V_SIZE, V_SIZE);
@@ -101,51 +117,48 @@ public class Vertice extends JPanel implements MouseMotionListener {
         repaint();
 
         // Actualiza las aristas al mover el vértice:
-        for (Component component : getParent().getComponents()) {
-            if (component instanceof Arista arista) {
-                if (arista.getOrigen().getID().equals(getID())) {
-                    arista.setOrigenX(getX() + V_SIZE / 2);
-                    arista.setOrigenY(getY() + V_SIZE / 2);
-                } else if (arista.getDestino().getID().equals(getID())) {
-                    arista.setDestX(getX() + V_SIZE / 2);
-                    arista.setDestY(getY() + V_SIZE / 2);
-                }
-                arista.repaint();
+        for (Arista arista : aristasConectadas) {
+            if (arista.getOrigen().getID().equals(this.ID)) {
+                arista.setOrigenX(getX() + V_SIZE / 2);
+                arista.setOrigenY(getY() + V_SIZE / 2);
+            } else if (arista.getDestino().getID().equals(this.ID)) {
+                arista.setDestX(getX() + V_SIZE / 2);
+                arista.setDestY(getY() + V_SIZE / 2);
             }
+            arista.repaint();
         }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        // No se utiliza, pero se implementa por la interfaz MouseMotionListener.
+        // No se sobreescribe, pero se implementa por la interfaz MouseMotionListener.
     }
 
     /**
-     * Maneja el evento de clic del ratón en el vértice.
-     * Hay dos escenarios donde el usuario dará click al vértice:
+     * Maneja el evento de click del ratón en el vértice.
+     * Hay varios escenarios donde el usuario dará click al vértice:
      * Si está en el modo "Agregar..." quiere decir que quiere agregar una arista entre dos vértices.
      * Si está en el modo "Eliminar..." quiere decir que quiere eliminar el vértice.
-     * Este método implementa la lógica para ambos casos.
-     *
-     * @param e El evento de clic del ratón.
+     * Si está en algún algoritmo, este vértice será el punto de partida.
+     * Este método implementa la lógica para los anteriores casos.
      */
-    private void leeClick(MouseEvent e) {
+    private void leeClick() {
         String modo = MainFrame.getModo();
         JPanel mainPanel = MainFrame.getMainPanel();
         Grafo grafo = MainFrame.getGrafo();
-
         switch (modo) {
             case "Agregar Vértice/Arista" -> {
+                grafo.descoloreaGrafo();
                 //Si no hay un vértice seleccionado anteriormente, este vértice es el origen de la arista
                 if (vOrigen == null) {
                     vOrigen = this;
-                    vOrigen.setColor(Color.GREEN);
+                    vOrigen.setColorDeVertice(Color.decode("#25AD6B"));
                 }
                 /* Si hay un vértice seleccionado previamente y el vértice actual es diferente al seleccionado,
                    entonces este vértice es el destino de la arista
                  */
                 else if (vOrigen != this) {
-                    this.setColor(Color.GREEN);
+                    this.setColorDeVertice(Color.decode("#25AD6B"));
                     if (grafo.existeArista(vOrigen.getID(), ID)) {
                         JOptionPane.showMessageDialog(
                                 mainPanel,
@@ -159,7 +172,7 @@ public class Vertice extends JPanel implements MouseMotionListener {
                         int opcion = JOptionPane.showConfirmDialog(
                                 mainPanel,
                                 mensaje,
-                                "Peso de Arista",
+                                "Ingrese el peso de la Arista",
                                 JOptionPane.OK_CANCEL_OPTION,
                                 JOptionPane.PLAIN_MESSAGE
                         );
@@ -180,6 +193,7 @@ public class Vertice extends JPanel implements MouseMotionListener {
                                         "Peso inválido",
                                         JOptionPane.WARNING_MESSAGE
                                 );
+
                             } else {
                                 Arista arista = grafo.creaArista(vOrigen.getID(), ID, valor);
                                 if (arista != null) {
@@ -191,36 +205,53 @@ public class Vertice extends JPanel implements MouseMotionListener {
                             }
                         }
                     }
-                    vOrigen.setColor(Color.WHITE);
-                    this.setColor(Color.WHITE);
+                    vOrigen.setColorDeVertice(Color.decode("#ED94FF"));
+                    this.setColorDeVertice(Color.decode("#ED94FF"));
                     vOrigen = null;
                 } else {
-                    vOrigen.setColor(Color.WHITE);
-                    this.setColor(Color.WHITE);
+                    /* Si el usuario hace click dos veces en el mismo vértice, vuelve a su color por
+                       defecto una especie de "cancelar acción".
+                     */
+                    vOrigen.setColorDeVertice(Color.decode("#ED94FF"));
+                    this.setColorDeVertice(Color.decode("#ED94FF"));
                     vOrigen = null;
                 }
             }
             case "Eliminar Vértice/Arista" -> {
+                grafo.descoloreaGrafo();
                 // Para eliminar el vértice, tenemos que eliminar todas las aristas conectadas a él:
-                Component[] components = mainPanel.getComponents();
-                for (Component component : components) {
-                    if (component instanceof Arista arista) {
-                        if (arista.getOrigen() == Vertice.this || arista.getDestino() == Vertice.this) {
-                            grafo.eliminaArista(arista);
-                            mainPanel.remove(arista.getPesoLabel());
-                            mainPanel.remove(arista);
-                            mainPanel.revalidate();
-                        }
-                    }
+                while (!aristasConectadas.isEmpty()) {
+                    Arista arista = aristasConectadas.poll();
+                    arista.getOrigen().desconectaArista(arista);
+                    arista.getDestino().desconectaArista(arista);
+                    grafo.eliminaArista(arista);
+                    mainPanel.remove(arista.getPesoLabel());
+                    mainPanel.remove(arista);
+                    mainPanel.revalidate();
                 }
                 grafo.eliminaVertice(Vertice.this);
                 mainPanel.remove(Vertice.this);
                 mainPanel.repaint();
                 mainPanel.revalidate();
             }
-            default -> {
-                // No se realiza ninguna acción para otros modos.
+            case "Recorrido en Amplitud" -> {
+                grafo.descoloreaGrafo();
+                MainFrame.getInfoLabel().setText(grafo.recorreEnAmplitud(this));
             }
+            case "Recorrido en Profundidad" -> {
+                grafo.descoloreaGrafo();
+                MainFrame.getInfoLabel().setText(grafo.recorreEnProfundidad(this));
+            }
+            case "Algoritmo de Dijkstra" -> {
+                grafo.descoloreaGrafo();
+                MainFrame.getInfoLabel().setText(grafo.algoritmoDijkstra(this));
+            }
+            case "Árbol de expansión mínima" -> {
+                grafo.descoloreaGrafo();
+                grafo.arbolExpansionMinima(this);
+                MainFrame.getInfoLabel().setText("Click en el panel para borrar aristas grises");
+            }
+            default -> {}
         }
     }
 }
