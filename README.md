@@ -8,17 +8,28 @@ La motivación principal de este proyecto fue adquirir experiencia en el uso de 
 
 - Permite añadir un vérices en el panel.
 - Permite agregar aristas ponderadas no dirigidas entre vértices.
+  
   ![Agregar](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/fff880ae-2b9b-4ff9-ada6-9573ff93b9f9)
+
 - Permite eliminar vértices del panel, todas las aristas conectadas al vértice también se eliminarán.
 - Permite eliminar aristas individualmente.
+  
   ![Eliminar](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/89d2e18d-a018-4157-af07-c07568d08420)
+  
 - Permite recorrer en amplitud a partir de un vértice dado (Breadth-First Search).
+  
   ![Amplitud](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/b79084ae-8fc2-40a6-8053-8aaf19416551)
+
 - Permite recorrer en profundidad a partir de un vértice dado (Depth-First Search).
+  
   ![Profundidad](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/03e35cfd-be86-4cf8-981a-41674c45b445)
+  
 - Permite encontrar el camino más corto desde un vértice dado hasta todos los demás con el algoritmo de Dijkstra.
+  
   ![dijk](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/3f20f41b-d4ef-4d38-bc85-49de11faad66)
-- Permite generar un árbol de expansión mínima que recubra todos los vértices con el menor peso usando el algoritmo de Kruskal.
+
+- Genera un árbol de expansión mínima que recubre todos los vértices con el menor peso usando el algoritmo de Kruskal.
+  
   ![arbol](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/657d6973-3708-4602-9ee7-8384bfc1ffad)
 
 ## Licencia
