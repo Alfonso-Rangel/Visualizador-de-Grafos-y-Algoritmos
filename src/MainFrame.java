@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -7,7 +8,7 @@ import java.awt.event.*;
  * Proporciona una interfaz gráfica para visualizar y manipular grafos.
  *
  * @author Luis-Rangel
- * @version 1.0
+ * @version 1.1
  */
 public class MainFrame extends JFrame {
 
@@ -36,27 +37,28 @@ public class MainFrame extends JFrame {
     private static String modo = "Agregar Vértice/Arista";
 
     /**
-     * Devuelve el panel principal de la aplicación.
-     *
-     * @return El panel principal que contiene el grafo.
+     * @return El panel principal de la aplicación, este panel contiene elementos hijos como Vértices y Aristas.
      */
     public static JPanel getMainPanel() {
         return mainPanel;
     }
 
     /**
-     * Devuelve el modo actual de la aplicación.
-     *
-     * @return El modo actual de la aplicación.
+     * @return El modo actual de la aplicación, que indica el comportamiento seleccionado por el usuario.
      */
     public static String getModo() {
         return modo;
     }
 
     /**
-     * Devuelve el grafo utilizado en la aplicación.
-     *
-     * @return El objeto Grafo que representa el grafo de la aplicación.
+     * @return El panel de información de la aplicación, el infoLabel le muestra información contextual al usuario.
+     */
+    public static JLabel getInfoLabel() {
+        return infoLabel;
+    }
+
+    /**
+     * @return El objeto Grafo que representa el estado actual del el grafo de la aplicación.
      */
     public static Grafo getGrafo() {
         return GRAFO;
@@ -69,7 +71,7 @@ public class MainFrame extends JFrame {
      */
     public MainFrame() {
         super("Visualizador de Grafos");
-        setSize(800, 600);
+        setSize(850, 650);
         setName(this.getTitle());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(true);
@@ -88,10 +90,9 @@ public class MainFrame extends JFrame {
         infoLabel = new JLabel("Click en espacio vacío para añadir vértice o en vértice para añadir arista");
         infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
         infoLabel.setOpaque(true);
-        infoLabel.setBackground(Color.DARK_GRAY);
-        infoLabel.setForeground(Color.WHITE);
-        infoLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        infoLabel.setBorder(new EmptyBorder(7, 0, 7, 0));
+
+        infoLabel.setFont(infoLabel.getFont().deriveFont(14.8f));
         add(infoLabel, BorderLayout.SOUTH);
 
         setJMenuBar(creaMenuBar());
@@ -99,23 +100,17 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * Crea y devuelve la barra de menú de la aplicación.
-     *
      * @return La barra de menú creada para la aplicación.
      */
     private JMenuBar creaMenuBar() {
         JMenuBar menuBar = new JMenuBar();
-        menuBar.setLayout(new BorderLayout());
-        menuBar.setBackground(Color.DARK_GRAY);
-        menuBar.setForeground(Color.WHITE);
-        menuBar.setFont(new Font("Arial", Font.BOLD, 14));
+        menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.X_AXIS));
 
-        JLabel modoLabel = new JLabel(modo + "   ");
+        JLabel modoLabel = new JLabel(modo);
         modoLabel.setName("ModoLabel");
-        modoLabel.setBackground(Color.BLACK);
-        modoLabel.setForeground(Color.WHITE);
-
+        //-------------------------------------------------------------------------------
         JMenu fileMenu = new JMenu("Archivo");
+
         JMenuItem limpiarItem = new JMenuItem("Limpiar");
         limpiarItem.setName("Limpiar");
         limpiarItem.addActionListener(e -> {
@@ -130,19 +125,17 @@ public class MainFrame extends JFrame {
         exitItem.setName("Exit");
         exitItem.addActionListener(event -> System.exit(0));
         fileMenu.add(exitItem);
-
-        fileMenu.setForeground(Color.WHITE);
-
-        menuBar.add(fileMenu, BorderLayout.WEST);
-
+        menuBar.add(fileMenu);
+        //-------------------------------------------------------------------------------
         JMenu modoMenu = new JMenu("Modo");
 
         JMenuItem agregarItem = new JMenuItem("Agregar Vértice/Arista");
         agregarItem.setName("Agregar Vértice/Arista");
         agregarItem.addActionListener(e -> {
             modo = "Agregar Vértice/Arista";
-            modoLabel.setText(modo + "   ");
+            modoLabel.setText(modo);
             infoLabel.setText("Click en espacio vacío para añadir vértice o en vértice para añadir arista");
+            GRAFO.descoloreaGrafo();
         });
         modoMenu.add(agregarItem);
 
@@ -150,8 +143,9 @@ public class MainFrame extends JFrame {
         eliminarItem.setName("Eliminar Vértice/Arista");
         eliminarItem.addActionListener(e -> {
             modo = "Eliminar Vértice/Arista";
-            modoLabel.setText(modo + "   ");
+            modoLabel.setText(modo);
             infoLabel.setText("Click en el elemento que quieras eliminar");
+            GRAFO.descoloreaGrafo();
         });
         modoMenu.add(eliminarItem);
 
@@ -159,29 +153,75 @@ public class MainFrame extends JFrame {
         ningunoItem.setName("Ninguno");
         ningunoItem.addActionListener(e -> {
             modo = "Ninguno";
-            modoLabel.setText(modo + "   ");
+            modoLabel.setText(modo);
             infoLabel.setText("Ningún modo seleccionado");
         });
         modoMenu.add(ningunoItem);
-        modoMenu.setForeground(Color.WHITE);
+        menuBar.add(modoMenu);
+        //-------------------------------------------------------------------------------
+        JMenu algoritmosMenu = new JMenu("Algoritmos");
 
-        menuBar.add(modoMenu, BorderLayout.CENTER);
+        JMenuItem amplitudItem = new JMenuItem("Recorrido en Amplitud");
+        amplitudItem.setName("Amplitud");
+        amplitudItem.addActionListener(e -> {
+            modo = "Recorrido en Amplitud";
+            modoLabel.setText(modo);
+            infoLabel.setText("Seleccione un vértice como punto de partida");
+            GRAFO.crearMatrizAdyacencia();
+            GRAFO.descoloreaGrafo();
+        });
+        algoritmosMenu.add(amplitudItem);
 
-        JPanel panelDerecho = new JPanel(new BorderLayout());
+        JMenuItem profundidadItem = new JMenuItem("Recorrido en Profundidad");
+        profundidadItem.setName("Profundidad");
+        profundidadItem.addActionListener(e -> {
+            modo = "Recorrido en Profundidad";
+            modoLabel.setText(modo);
+            infoLabel.setText("Seleccione un vértice como punto de partida");
+            GRAFO.crearMatrizAdyacencia();
+            GRAFO.descoloreaGrafo();
+        });
+        algoritmosMenu.add(profundidadItem);
+
+        JMenuItem dijkstraItem = new JMenuItem("Algoritmo de Dijkstra");
+        dijkstraItem.setName("Dijkstra");
+        dijkstraItem.addActionListener(e -> {
+            modo = "Algoritmo de Dijkstra";
+            modoLabel.setText(modo);
+            infoLabel.setText("Seleccione un vértice como punto de partida");
+            GRAFO.crearMatrizAdyacencia();
+            GRAFO.descoloreaGrafo();
+        });
+        algoritmosMenu.add(dijkstraItem);
+
+        JMenuItem arbolItem = new JMenuItem("Árbol de expansión mínima");
+        arbolItem.setName("Árbol de expansión mínima");
+        arbolItem.addActionListener(e -> {
+            modo = "Árbol de expansión mínima";
+            modoLabel.setText(modo);
+            infoLabel.setText("Seleccione un vértice arbitrario");
+            GRAFO.descoloreaGrafo();
+        });
+        algoritmosMenu.add(arbolItem);
+
+        menuBar.add(algoritmosMenu);
+        //-------------------------------------------------------------------------------
+        JPanel panelDerecho = new JPanel();
+        panelDerecho.setLayout(new FlowLayout(FlowLayout.RIGHT));
         panelDerecho.setOpaque(false);
-        panelDerecho.add(modoLabel, BorderLayout.EAST);
+        panelDerecho.add(modoLabel);
 
-        menuBar.add(panelDerecho, BorderLayout.EAST);
+        menuBar.add(Box.createHorizontalGlue());
+        menuBar.add(panelDerecho);
 
         return menuBar;
     }
 
-
     /**
      * Método para manejar el evento de click del mouse en el panel principal.
      * Se evalúa el input del usuario y manda mensajes de error en caso de una entrada incorrecta.
-     * Este método solo evalúa clicks en el panel principal pero no en Vértices o Aristas.
-     * @param e El evento de click del mouse.
+     * Este método solo evalúa clicks en el panel principal, pero no en Vértices o Aristas, pues estos tienen sus propios eventos.
+     * @param e El evento de click del mouse en el panel principal de la aplicación.
      */
     private static void leeClick(MouseEvent e) {
         Point click = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), mainPanel);
@@ -189,11 +229,11 @@ public class MainFrame extends JFrame {
         String ID = "";
         switch (modo) {
             case "Agregar Vértice/Arista" -> {
-                if (!(component instanceof Vertice isAVertice) && Vertice.getvOrigen() == null) {
+                if (!(component instanceof Vertice) && Vertice.getvOrigen() == null) {
                     ID = (String) JOptionPane.showInputDialog(
                             mainPanel,
                             "Ingrese el nombre:",
-                            "Nombre",
+                            "Nombre del vértice",
                             JOptionPane.PLAIN_MESSAGE,
                             null, null, ID
                     );
@@ -222,9 +262,37 @@ public class MainFrame extends JFrame {
                             mainPanel.revalidate();
                             mainPanel.repaint();
                         }
+                        else {
+                            JOptionPane.showMessageDialog(
+                                    mainPanel,
+                                    "El vértice ya existe en el grafo",
+                                    "Vértice repetido",
+                                    JOptionPane.WARNING_MESSAGE
+                            );
+                        }
                     }
                 }
             }
+            case "Árbol de expansión mínima" -> {
+                int opcion = JOptionPane.showConfirmDialog(
+                        mainPanel,
+                        "¿Quieres eliminar los aristas grises?",
+                        "Confirma eliminación", JOptionPane.YES_NO_OPTION
+                );
+                if (opcion == JOptionPane.YES_OPTION) {
+                    for (Arista arista : GRAFO.aristasInnecesarias()) {
+                        arista.getOrigen().desconectaArista(arista);
+                        arista.getDestino().desconectaArista(arista);
+                        GRAFO.eliminaArista(arista);
+                        mainPanel.remove(arista.getPesoLabel());
+                        mainPanel.remove(arista);
+                        mainPanel.revalidate();
+                    }
+                    mainPanel.repaint();
+                    mainPanel.revalidate();
+                }
+            }
+            default -> {}
         }
     }
 }
