@@ -28,7 +28,7 @@ La motivación principal de este proyecto fue adquirir experiencia en el uso de 
   
   ![dijk](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/3f20f41b-d4ef-4d38-bc85-49de11faad66)
 
-- Genera un árbol de expansión mínima que recubre todos los vértices con el menor peso usando el algoritmo de Kruskal.
+- Genera un árbol de expansión mínima que recubre todos los vértices con el menor peso posible usando el algoritmo de Kruskal.
   
   ![arbol](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/657d6973-3708-4602-9ee7-8384bfc1ffad)
 
