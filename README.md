@@ -17,8 +17,8 @@ La motivación principal de este proyecto fue adquirir experiencia en el uso de 
   ![Eliminar](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/89d2e18d-a018-4157-af07-c07568d08420)
   
 - Permite recorrer en amplitud a partir de un vértice dado (Breadth-First Search).
-  
-  ![Amplitud](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/b79084ae-8fc2-40a6-8053-8aaf19416551)
+
+  ![Amplitud](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/263e6a4f-db4e-46ae-b052-90d150fa4e71)
 
 - Permite recorrer en profundidad a partir de un vértice dado (Depth-First Search).
   
