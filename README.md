@@ -6,7 +6,7 @@ La motivación principal de este proyecto fue adquirir experiencia en el uso de 
 
 ## Características
 
-- Permite añadir un vérices en el panel.
+- Permite añadir vértices en el panel.
 - Permite agregar aristas ponderadas no dirigidas entre vértices.
   
   ![Agregar](https://github.com/Alfonso-Rangel/Visualizador-de-Grafos/assets/98926087/fff880ae-2b9b-4ff9-ada6-9573ff93b9f9)
