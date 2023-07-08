@@ -195,7 +195,7 @@ public class MainFrame extends JFrame {
         algoritmosMenu.add(dijkstraItem);
 
         JMenuItem arbolItem = new JMenuItem("Árbol de expansión mínima");
-        arbolItem.setName("Árbol de expansión mínima");
+        arbolItem.setName("Árbol de Expansión Mínima");
         arbolItem.addActionListener(e -> {
             modo = "Árbol de expansión mínima";
             modoLabel.setText(modo);
